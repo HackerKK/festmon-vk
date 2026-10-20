@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>FestMon — вход VK</title>
+<link rel="icon" type="image/png" href="icon.png">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+         background: #111318; color: #e8e8ee; font: 17px/1.5 system-ui, sans-serif; }
+  main { max-width: 34em; padding: 24px 16px; text-align: center; }
+  img { width: 96px; height: 96px; border-radius: 22px; }
+  a { color: #35e0d2; }
+  code { color: #9b6cf0; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <img src="icon.png" alt="">
+  <h2 id="title">Передаю вход в FestMon…</h2>
+  <p id="text">Если ничего не происходит — <a id="go" href="#">нажмите сюда</a>.
+     FestMon должен быть открыт на этом компьютере, кнопка «Войти через VK» — нажата.</p>
+</main>
+<script>
+// Страница-переходник для «Войти через VK» (plugins/_vk_auth.py).
+// VK ID возвращает браузер только на https — сюда; отсюда браузер уходит на
+// FestMon этого же компьютера с теми же параметрами (code, state, device_id).
+// Ничего не отправляется наружу: ни запросов, ни счётчиков.
+(function () {
+  var target = "http://localhost:53682/vk-auth" + window.location.search;
+  var go = document.getElementById("go");
+  go.href = target;
+  if (!/[?&](code|error)=/.test(window.location.search)) {
+    document.getElementById("title").textContent = "Страница входа FestMon";
+    document.getElementById("text").innerHTML =
+      "Эту страницу открывает VK после входа. Её адрес впишите в FestMon " +
+      "(«Страница возврата») и в «Доверенный Redirect URL» приложения VK ID:<br><code>" +
+      window.location.href.replace(/[?#].*$/, "").replace(/</g, "&lt;") + "</code>";
+    return;
+  }
+  window.location.replace(target);
+})();
+</script>
+</body>
+</html>
